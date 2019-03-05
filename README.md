@@ -1,7 +1,7 @@
 # Instagraph
 > Social graph network of your instagram account.
 
-<p align="center"><img width=100% src="https://raw.githubusercontent.com/ahmdrz/instagraph/master/resources/screenshot.png"></p>
+<p align="center"><img width=100% src="https://github.com/ahmdrz/instagraph/blob/master/resources/screenshot.png"></p>
 
 ### Docker
 

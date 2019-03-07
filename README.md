@@ -19,4 +19,8 @@ $ ./instagraph -username="" -password=""
 
 ---
 
+<p align="center"><img width=100% src="https://raw.githubusercontent.com/ahmdrz/instagraph/master/resources/screenshot2.png"></p>
+
+---
+
 Powered with :heart: by `sigma.js` and `ahmdrz/goinsta`.

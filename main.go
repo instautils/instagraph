@@ -16,77 +16,81 @@ import (
 
 func main() {
 	var (
-		username string
-		password string
-
-		// TODO: get these values from parameters
+		username   string
+		password   string
 		delay      = 1
 		limit      = 300
 		usersLimit = 300
 		listenAddr = "localhost:8080"
+		g          = graph.New()
+		showLast   = false
 	)
 	username = os.Getenv("INSTA_USERNAME")
 	password = os.Getenv("INSTA_PASSWORD")
 	if username == "" && password == "" {
 		flag.StringVar(&username, "username", "", "Instagram username")
 		flag.StringVar(&password, "password", "", "Instagram password")
+		flag.IntVar(&limit, "limit", 300, "How many users should be scan in firsth depth of your followings")
+		flag.IntVar(&usersLimit, "users-limit", 300, "Max users in each followings to scan")
+		flag.IntVar(&delay, "delay", 1, "Sleep between each following")
+		flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
 		flag.Parse()
 	}
-	g := graph.New()
 
-	var instance *instagram.Instagram
-	if fileExists(username + ".json") {
-		var err error
-		log.Printf("Loading instagram as %s ...", username)
-		instance, err = instagram.Import(username + ".json")
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-	} else {
-		var err error
-		log.Printf("Connecting to instagram as %s ...", username)
-		instance, err = instagram.New(username, password)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		log.Printf("Connected !")
+	if !showLast {
+		var instance *instagram.Instagram
+		if fileExists(username + ".json") {
+			var err error
+			log.Printf("Loading instagram as %s ...", username)
+			instance, err = instagram.Import(username + ".json")
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+		} else {
+			var err error
+			log.Printf("Connecting to instagram as %s ...", username)
+			instance, err = instagram.New(username, password)
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			log.Printf("Connected !")
 
-		instance.Export(username + ".json")
+			instance.Export(username + ".json")
+		}
+
+		log.Printf("Fetching followings ...")
+		followings := instance.Followings()
+		shuffle(followings)
+
+		if limit == -1 {
+			limit = len(followings)
+		}
+
+		for i, user := range followings {
+			if i >= limit {
+				log.Println("Reached to limit.")
+				break
+			}
+
+			log.Printf("Scaning (%04d/%04d) user %s ...", i, limit, user.Username)
+
+			users := user.Followings(instance)
+			if len(users) > usersLimit {
+				users = users[:usersLimit]
+			}
+			shuffle(users)
+
+			for _, target := range users {
+				g.AddConnection(user.Username, target.Username)
+			}
+
+			time.Sleep(time.Duration(delay) * time.Second)
+		}
+
+		ioutil.WriteFile("static/data.json", g.Marshall(), 0755)
 	}
-
-	log.Printf("Fetching followings ...")
-	followings := instance.Followings()
-	shuffle(followings)
-
-	if limit == -1 {
-		limit = len(followings)
-	}
-
-	// TODO: open a file and write instead of saving data on memory
-	for i, user := range followings {
-		if i >= limit {
-			log.Println("Reached to limit.")
-			break
-		}
-
-		log.Printf("Scaning (%04d/%04d) user %s ...", i, limit, user.Username)
-
-		users := user.Followings(instance)
-		if len(users) > usersLimit {
-			users = users[:usersLimit]
-		}
-		shuffle(users)
-
-		for _, target := range users {
-			g.AddConnection(user.Username, target.Username)
-		}
-
-		time.Sleep(time.Duration(delay) * time.Second)
-	}
-
-	ioutil.WriteFile("static/data.json", g.Marshall(), 0755)
 
 	handler := http.NewServeMux()
 	handler.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

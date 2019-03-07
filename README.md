@@ -1,5 +1,5 @@
 # Instagraph
-> Social graph network of your instagram account.
+> Social graph network of your Instagram account.
 
 <p align="center"><img width=100% src="https://github.com/ahmdrz/instagraph/raw/master/resources/screenshot.png"></p>
 
@@ -12,11 +12,15 @@ $ ./instagraph -username="" -password=""
 
 ##### Parameters
 
-1. username: Username of your instagram account.
-2. password: Password of your instagram account.
-3. limit: Limit of users in first depth scan of your followings.
-4. delay: Sleep time between each user scan.
-5. users-limit: Maximum number of users in each followings scan request.
+1. **username**: Username of your Instagram account.
+2. **password**: Password of your Instagram account.
+3. **limit**: Limit of users in first depth scan of your followings.
+4. **delay**: Sleep time between each user scan.
+5. **users-limit**: Maximum number of users in each followings scan request.
+
+##### Warning
+
+Please make sure that the `<username>.json` is in the safe place. It's your login information of your Instagram.
 
 ### Docker
 

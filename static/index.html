@@ -67,12 +67,20 @@
 
             var nodes = {};
             var json = JSON.parse(this.responseText);
+            var averageSize = 0;
             json.nodes.forEach(function (node) {
-                if (node.size < 10) {
+                averageSize += node.size;
+            });
+            averageSize /= json.nodes.length;
+            json.nodes.forEach(function (node) {
+                if (node.size < averageSize) {
                     return;
                 }
                 nodes[node.id] = true;
                 node.color = colors.nodes.dark;
+                node.x *= 2;
+                node.y *= 2;
+                node.size *= 2;
                 s.graph.addNode(node);
             });
             json.edges.forEach(function (edge) {

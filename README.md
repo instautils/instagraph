@@ -3,9 +3,18 @@
 
 <p align="center"><img width=100% src="https://github.com/ahmdrz/instagraph/raw/master/resources/screenshot.png"></p>
 
-### Build (recommended)
+### Installation (recommended)
 
 ```
+$ # If you have Golang on your computer.
+$ go get -u github.com/ahmdrz/instagraph
+```
+
+### Build
+
+```
+$ git clone https://github.com/ahmdrz/instagraph
+$ cd instagraph
 $ go build -i -o instagraph
 $ ./instagraph -username="" -password=""
 ```

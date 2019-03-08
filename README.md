@@ -38,6 +38,10 @@ $ docker pull ahmdrz/instagraph:latest
 $ docker run -e INSTA_USERNAME="" -e INSTA_PASSWORD="" -p 8080:8080 ahmdrz/instagraph:latest
 ```
 
+##### Note
+
+Please wait for scanning proccess to be finished and you see `Listening to 0.0.0.0:8080` message then open browser.
+
 ---
 
 <p align="center"><img width=100% src="https://raw.githubusercontent.com/ahmdrz/instagraph/master/resources/screenshot2.png"></p>

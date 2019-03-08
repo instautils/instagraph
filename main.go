@@ -21,7 +21,7 @@ func main() {
 		delay      = 1
 		limit      = 300
 		usersLimit = 300
-		listenAddr = "localhost:8080"
+		listenAddr = "0.0.0.0:8080"
 		g          = graph.New()
 		showLast   = false
 	)

@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    background-color: #fefafc;
+}
+
+#container {
+    width: 100%;
+    position: fixed;
+    height: 100%;
+    margin: auto;
+    left: 0;
+    top: 0;
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -20,7 +21,7 @@ func main() {
 	var (
 		username   string
 		password   string
-		delay      = 1
+		delay      = 500
 		limit      = 300
 		usersLimit = 300
 		listenAddr = "0.0.0.0:8080"
@@ -37,7 +38,7 @@ func main() {
 	flag.StringVar(&scanMode, "scan-mode", "followers", "Scan mode (followers/followings)")
 	flag.IntVar(&limit, "limit", 300, "How many users should be scan in firsth depth of your followings")
 	flag.IntVar(&usersLimit, "users-limit", 300, "Max users in each followings to scan")
-	flag.IntVar(&delay, "delay", 1, "Sleep between each following")
+	flag.IntVar(&delay, "delay", 500, "Sleep between each following (in ms)")
 	flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
 	flag.Parse()
 
@@ -117,7 +118,7 @@ func main() {
 				g.AddConnection(user.Username, target.Username)
 			}
 
-			time.Sleep(time.Duration(delay) * time.Second)
+			time.Sleep(time.Duration(delay) * time.Millisecond)
 		}
 
 		ioutil.WriteFile("static/data.json", g.Marshall(), 0755)
@@ -134,6 +135,8 @@ func main() {
 	})
 	handler.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	// newline after progressbar
+	fmt.Println()
 	log.Printf("Listening to %s ...", listenAddr)
 	log.Fatal(http.ListenAndServe(listenAddr, handler))
 }

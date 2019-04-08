@@ -28,7 +28,7 @@ func main() {
 	)
 	username = os.Getenv("INSTA_USERNAME")
 	password = os.Getenv("INSTA_PASSWORD")
-	if username == "" && password == "" {
+	if len(username)*len(password) == 0 {
 		flag.StringVar(&username, "username", "", "Instagram username")
 		flag.StringVar(&password, "password", "", "Instagram password")
 	}
@@ -38,6 +38,11 @@ func main() {
 	flag.IntVar(&delay, "delay", 1, "Sleep between each following")
 	flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
 	flag.Parse()
+
+	if len(username)*len(password) == 0 {
+		log.Fatal("username or password is empty")
+		return
+	}
 
 	if scanMode != "followers" && scanMode != "followings" {
 		log.Fatal("bad scan-mode. should be `followers` or `followings`")

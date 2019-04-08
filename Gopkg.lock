@@ -9,9 +9,28 @@
   revision = "0e274911d267b9361e278a84494b5c3b64b6a612"
   version = "v2.4.0"
 
+[[projects]]
+  branch = "master"
+  digest = "1:f7fe69581040ed4bb2d5444e3b53088f5c458e2e242e0ae44bd90bc3aa019462"
+  name = "github.com/mitchellh/colorstring"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d06e56a500db4d08c33db0b79461e7c9beafca2d"
+
+[[projects]]
+  digest = "1:d7aee6810f676ba84c2e77559b27352c8ecd0a2e803d4a30578445202caf5d6e"
+  name = "github.com/schollz/progressbar"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a77c9589c5cb6769d5c3d08ee2a39aa62bf69a16"
+  version = "v2.11.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/ahmdrz/goinsta"]
+  input-imports = [
+    "github.com/ahmdrz/goinsta",
+    "github.com/schollz/progressbar",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

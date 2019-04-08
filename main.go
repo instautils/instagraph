@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/schollz/progressbar"
+
 	"github.com/ahmdrz/instagraph/src/graph"
 	"github.com/ahmdrz/instagraph/src/instagram"
 )
@@ -73,7 +75,7 @@ func main() {
 			instance.Export(username + ".json")
 		}
 
-		log.Printf("Fetching %s ...", scanMode)
+		log.Printf("Fetching current %s ...", scanMode)
 		currentUsers := []instagram.User{}
 		if scanMode == "followers" {
 			currentUsers = instance.Followers()
@@ -86,15 +88,16 @@ func main() {
 			limit = len(currentUsers)
 		}
 
+		log.Printf("Scanning %s ...", scanMode)
+		bar := progressbar.NewOptions(limit, progressbar.OptionSetRenderBlankState(true))
 		for i, user := range currentUsers {
+			bar.Add(1)
+
 			g.AddConnection(username, user.Username)
 
 			if i >= limit {
-				log.Println("Reached to limit.")
 				break
 			}
-
-			log.Printf("Scaning (%04d/%04d) user %s ...", i, limit, user.Username)
 
 			users := []instagram.User{}
 			if scanMode == "followers" {

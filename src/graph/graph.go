@@ -56,7 +56,7 @@ func (g *Graph) Marshall() []byte {
 		nodes = append(nodes, Node{
 			ID:    user,
 			Label: user,
-			Size:  size * 2,
+			Size:  size,
 			X:     size + random(iteration+offset),
 			Y:     size + random(iteration+offset),
 		})

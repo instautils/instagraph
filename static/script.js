@@ -1,13 +1,9 @@
 var colors = {
-    'nodes': {
-        'light': 'rgba(252, 227, 236, 0.05)',
-        'dark': '#ad1457'
-    },
-    'edges': {
-        'light': 'rgba(252, 227, 236, 0.05)',
-        'dark': '#f06292'
-    }
+    'light': 'rgba(252, 227, 236, 0.05)',
+    'dark': '#f06292',
+    'blue': '#303f9f',
 }
+
 sigma.classes.graph.addMethod('neighbors', function (nodeId) {
     var k,
         neighbors = {},
@@ -36,17 +32,13 @@ xhttp.onreadystatechange = function () {
 
     var nodes = {};
     var json = JSON.parse(this.responseText);
-    var averageSize = 0;
+    var minSize = 1;
     json.nodes.forEach(function (node) {
-        averageSize += node.size;
-    });
-    averageSize /= json.nodes.length;
-    json.nodes.forEach(function (node) {
-        if (node.size < averageSize) {
+        if (node.size < minSize) {
             return;
         }
         nodes[node.id] = true;
-        node.color = colors.nodes.dark;
+        node.color = colors.dark;
         node.x *= 2;
         node.y *= 2;
         node.size *= 2;
@@ -56,7 +48,7 @@ xhttp.onreadystatechange = function () {
         if (!nodes[edge.source] || !nodes[edge.target]) {
             return;
         }
-        edge.color = colors.edges.dark;
+        edge.color = colors.dark;
         s.graph.addEdge(edge);
     });
     s.refresh();
@@ -71,16 +63,16 @@ s.bind('clickNode', function (e) {
 
     s.graph.nodes().forEach(function (n) {
         if (toKeep[n.id])
-            n.color = colors.nodes.dark;
+            n.color = colors.dark;
         else
-            n.color = colors.nodes.light;
+            n.color = colors.light;
     });
 
     s.graph.edges().forEach(function (e) {
         if (toKeep[e.source] && toKeep[e.target])
-            e.color = colors.edges.dark;
+            e.color = colors.dark;
         else
-            e.color = colors.edges.light;
+            e.color = colors.light;
     });
 
     s.refresh();
@@ -88,11 +80,11 @@ s.bind('clickNode', function (e) {
 
 s.bind('clickStage', function (e) {
     s.graph.nodes().forEach(function (n) {
-        n.color = colors.nodes.dark;
+        n.color = colors.dark;
     });
 
     s.graph.edges().forEach(function (e) {
-        e.color = colors.edges.dark;
+        e.color = colors.dark;
     });
     s.refresh();
 });

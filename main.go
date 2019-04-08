@@ -81,6 +81,8 @@ func main() {
 		}
 
 		for i, user := range followings {
+			g.AddConnection(username, user.Username)
+
 			if i >= limit {
 				log.Println("Reached to limit.")
 				break
@@ -95,6 +97,9 @@ func main() {
 			shuffle(users)
 
 			for _, target := range users {
+				if target.Username == username {
+					continue
+				}
 				g.AddConnection(user.Username, target.Username)
 			}
 

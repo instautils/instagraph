@@ -47,3 +47,18 @@ func (i *Instagram) Followings() []User {
 	}
 	return output
 }
+
+func (i *Instagram) Followers() []User {
+	output := make([]User, 0)
+	users := i.insta.Account.Followers()
+	for users.Next() {
+		for _, user := range users.Users {
+			output = append(output, User{
+				ID:         user.ID,
+				Username:   user.Username,
+				ProfilePic: user.ProfilePicURL,
+			})
+		}
+	}
+	return output
+}

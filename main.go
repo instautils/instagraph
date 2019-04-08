@@ -50,6 +50,7 @@ func main() {
 	}
 
 	if !showLast {
+		log.Printf("Scan mode is '%s'", scanMode)
 		var instance *instagram.Instagram
 		if fileExists(username + ".json") {
 			var err error
@@ -72,15 +73,20 @@ func main() {
 			instance.Export(username + ".json")
 		}
 
-		log.Printf("Fetching followings ...")
-		followings := instance.Followings()
-		shuffle(followings)
+		log.Printf("Fetching %s ...", scanMode)
+		currentUsers := []instagram.User{}
+		if scanMode == "followers" {
+			currentUsers = instance.Followers()
+		} else {
+			currentUsers = instance.Followings()
+		}
+		shuffle(currentUsers)
 
 		if limit == -1 {
-			limit = len(followings)
+			limit = len(currentUsers)
 		}
 
-		for i, user := range followings {
+		for i, user := range currentUsers {
 			g.AddConnection(username, user.Username)
 
 			if i >= limit {
@@ -90,7 +96,12 @@ func main() {
 
 			log.Printf("Scaning (%04d/%04d) user %s ...", i, limit, user.Username)
 
-			users := user.Followings(instance)
+			users := []instagram.User{}
+			if scanMode == "followers" {
+				users = user.Followers(instance)
+			} else {
+				users = user.Followings(instance)
+			}
 			if len(users) > usersLimit {
 				users = users[:usersLimit]
 			}

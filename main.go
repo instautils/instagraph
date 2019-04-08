@@ -24,17 +24,24 @@ func main() {
 		listenAddr = "0.0.0.0:8080"
 		g          = graph.New()
 		showLast   = false
+		scanMode   = "followers"
 	)
 	username = os.Getenv("INSTA_USERNAME")
 	password = os.Getenv("INSTA_PASSWORD")
 	if username == "" && password == "" {
 		flag.StringVar(&username, "username", "", "Instagram username")
 		flag.StringVar(&password, "password", "", "Instagram password")
-		flag.IntVar(&limit, "limit", 300, "How many users should be scan in firsth depth of your followings")
-		flag.IntVar(&usersLimit, "users-limit", 300, "Max users in each followings to scan")
-		flag.IntVar(&delay, "delay", 1, "Sleep between each following")
-		flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
-		flag.Parse()
+	}
+	flag.StringVar(&scanMode, "scan-mode", "followers", "Scan mode (followers/followings)")
+	flag.IntVar(&limit, "limit", 300, "How many users should be scan in firsth depth of your followings")
+	flag.IntVar(&usersLimit, "users-limit", 300, "Max users in each followings to scan")
+	flag.IntVar(&delay, "delay", 1, "Sleep between each following")
+	flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
+	flag.Parse()
+
+	if scanMode != "followers" && scanMode != "followings" {
+		log.Fatal("bad scan-mode. should be `followers` or `followings`")
+		return
 	}
 
 	if !showLast {

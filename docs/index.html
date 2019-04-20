@@ -62,7 +62,12 @@
                 <div class="wrap">
                     <h1><img class="whitelogo" src="static/images/icons/network.svg"></h1>
                     <h1>InstaGraph</h1>
-                    <p>Social graph network of your Instagram account.</p>
+                    <p class="text-intro">Social graph network of your Instagram account.</p>
+                    <p>
+                        By Ahmadreza Zibaei (<a href="https://zibaei.net">https://zibaei.net</a>)
+                        <br />
+                        Special thanks to Prof. Babak Nasiri
+                    </p>
                 </div>
             </section>
             <section class="bg-apple">
@@ -77,16 +82,23 @@
             </section>
             <section class="bg-apple aligncenter">
                 <div class="wrap">
-                    <h2>Instagram Network Structure</h2>
+                    <h2>Instagram Network Structure</h2>                    
+                    <p class="text-intro">How to create and draw graph of users ?</p>
                 </div>
             </section>
             <section class="bg-apple">
-                <div class="wrap size-50">
-                    <p class="text-intro">You follow someone, someone follows you as well</p>
+                <div class="wrap size-50">                    
+                    <p class="text-intro mb-0">You follow someone, someone follows you as well</p>
                     <div class="wrap" id="simple_graph">
 
                     </div>
                     <p>You can move, zoom and navigate in graph.</p>
+                </div>
+            </section>
+            <section class="bg-apple aligncenter">
+                <div class="wrap">
+                    <h3>How to get this kind of data from Instagram ?</h3>
+                    <p class="text-intro">An introduction to crawlers.</p>
                 </div>
             </section>
         </article>
@@ -263,6 +275,7 @@
             'source': "sorooshmoghimi",
             'target': "aryan_rb",
         });
+        simple_graph.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 2 });
         simple_graph.refresh();
 
         window.ws = new WebSlides();

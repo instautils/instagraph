@@ -1,0 +1,20 @@
+img.whitelogo {
+    width: 256px;
+}
+
+#particles {
+    position: fixed;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    opacity: 0.8;
+}
+
+#simple_graph {
+    height: 300px;    
+    border-radius: 4px;
+    margin: 0;
+    width: 100%;
+    margin-top: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+}

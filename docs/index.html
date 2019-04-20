@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" type='text/css' media='all' href="static/css/webslides.css">
     <link rel="stylesheet" type='text/css' media='all' href="static/css/svg-icons.css">
+    <link rel="stylesheet" type='text/css' media='all' href="static/css/instagraph.css">
 
     <!-- FAVICONS -->
     <link rel="shortcut icon" sizes="16x16" href="static/images/favicons/favicon.png">
@@ -29,9 +30,241 @@
     <meta name="theme-color" content="#333333">
 </head>
 
-<body>    
+<body>
+    <header role="banner">
+        <nav role="navigation">
+            <ul>
+                <li class="github">
+                    <a rel="external" href="https://github.com/ahmdrz" title="Github">
+                        <svg class="fa-github">
+                            <use xlink:href="#fa-github"></use>
+                        </svg>
+                        <em>@ahmdrz</em>
+                    </a>
+                </li>
+                <li class="twitter">
+                    <a rel="external" href="https://twitter.com/aidenzibaei" title="Twitter">
+                        <svg class="fa-twitter">
+                            <use xlink:href="#fa-twitter"></use>
+                        </svg>
+                        <em>@aidenzibaei</em>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="particles"></div>
+
+    <main role="main">
+        <article id="webslides">
+            <section class="bg-apple aligncenter">
+                <div class="wrap">
+                    <h1><img class="whitelogo" src="static/images/icons/network.svg"></h1>
+                    <h1>InstaGraph</h1>
+                    <p>Social graph network of your Instagram account.</p>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap size-50">
+                    <h1>Social Network Analysis</h1>
+                    <p class="text-intro">is the process of investigating social structures through the use of networks
+                        and graph theory.</p>
+                    <p>It characterizes networked structures in terms of nodes (individual actors, people, or things
+                        within the network) and the ties, edges, or links (relationships or interactions) that connect
+                        them. </p>
+                </div>
+            </section>
+            <section class="bg-apple aligncenter">
+                <div class="wrap">
+                    <h2>Instagram Network Structure</h2>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap size-50">
+                    <p class="text-intro">You follow someone, someone follows you as well</p>
+                    <div class="wrap" id="simple_graph">
+
+                    </div>
+                    <p>You can move, zoom and navigate in graph.</p>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <script src="static/js/particles.min.js"></script>
+    <script src="static/js/sigma.min.js"></script>
     <script src="static/js/webslides.js"></script>
     <script>
+        var particles = {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#90a4ae"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.5,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 300,
+                    "color": "#90a4ae",
+                    "opacity": 0.15,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": false,
+                    },
+                    "resize": true
+                }
+            },
+            "retina_detect": true,
+            "config_demo": {
+                "hide_card": false,
+                "background_color": "#b61924",
+                "background_image": "",
+                "background_position": "50% 50%",
+                "background_repeat": "no-repeat",
+                "background_size": "cover"
+            }
+        };
+        particlesJS('particles', particles);
+
+        var simple_graph = new sigma({
+            renderer: {
+                container: document.getElementById('simple_graph'),
+                type: 'canvas'
+            },
+            settings: {
+                defaultNodeColor: '#eee',
+                defaultLabelColor: '#eee',
+                font: 'Roboto',
+            }
+        });
+        simple_graph.graph.addNode({
+            'id': "aidenzibaei",
+            'label': "aidenzibaei",
+            'x': 0,
+            'y': 0,
+            'size': 5,
+            'color': '#29b6f6'
+        });
+        simple_graph.graph.addNode({
+            'id': "ami_rsh",
+            'label': "ami_rsh",
+            'x': 3,
+            'y': 0,
+            'size': 3,
+        });
+        simple_graph.graph.addNode({
+            'id': "sorooshmoghimi",
+            'label': "sorooshmoghimi",
+            'x': -2,
+            'y': 2,
+            'size': 3,
+        });
+        simple_graph.graph.addNode({
+            'id': "msinamsh",
+            'label': "msinamsh",
+            'x': -2,
+            'y': -2,
+            'size': 3,
+        });
+        simple_graph.graph.addNode({
+            'id': "aryan_rb",
+            'label': "aryan_rb",
+            'x': -5,
+            'y': 0,
+            'size': 1,
+        });
+
+        simple_graph.graph.addEdge({
+            'id': '1',
+            'source': "aidenzibaei",
+            'target': "msinamsh",
+        });
+        simple_graph.graph.addEdge({
+            'id': '2',
+            'source': "msinamsh",
+            'target': "sorooshmoghimi",
+        });
+        simple_graph.graph.addEdge({
+            'id': '3',
+            'source': "aidenzibaei",
+            'target': "sorooshmoghimi",
+        });
+        simple_graph.graph.addEdge({
+            'id': '4',
+            'source': "aidenzibaei",
+            'target': "ami_rsh",
+        });
+        simple_graph.graph.addEdge({
+            'id': '5',
+            'source': "msinamsh",
+            'target': "ami_rsh",
+        });
+        simple_graph.graph.addEdge({
+            'id': '6',
+            'source': "msinamsh",
+            'target': "aryan_rb",
+        });
+        simple_graph.graph.addEdge({
+            'id': '7',
+            'source': "sorooshmoghimi",
+            'target': "aryan_rb",
+        });
+        simple_graph.refresh();
+
         window.ws = new WebSlides();
     </script>
     <script defer src="static/js/svg-icons.js"></script>

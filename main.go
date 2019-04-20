@@ -122,6 +122,9 @@ func main() {
 		}
 
 		ioutil.WriteFile("static/data.json", g.Marshall(), 0755)
+
+		// newline after progressbar
+		fmt.Println()
 	}
 
 	handler := http.NewServeMux()
@@ -135,8 +138,6 @@ func main() {
 	})
 	handler.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	// newline after progressbar
-	fmt.Println()
 	log.Printf("Listening to %s ...", listenAddr)
 	log.Fatal(http.ListenAndServe(listenAddr, handler))
 }

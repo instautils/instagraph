@@ -4,6 +4,11 @@ var colors = {
     'blue': '#303f9f',
 }
 
+var global = {
+    'username': 'aidenzibaei',
+    'min_size': 1,
+}
+
 sigma.classes.graph.addMethod('neighbors', function (nodeId) {
     var k,
         neighbors = {},
@@ -25,41 +30,12 @@ var s = new sigma({
     }
 });
 
-xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function () {
-    if (this.readyState != 4 || this.status != 200)
-        return;
+function findNode(node) {
+    console.log(node);
 
-    var nodes = {};
-    var json = JSON.parse(this.responseText);
-    var minSize = 1;
-    json.nodes.forEach(function (node) {
-        if (node.size < minSize) {
-            return;
-        }
-        nodes[node.id] = true;
-        node.color = colors.dark;
-        node.x *= 2;
-        node.y *= 2;
-        node.size *= 2;
-        s.graph.addNode(node);
-    });
-    json.edges.forEach(function (edge) {
-        if (!nodes[edge.source] || !nodes[edge.target]) {
-            return;
-        }
-        edge.color = colors.dark;
-        s.graph.addEdge(edge);
-    });
-    s.refresh();
-};
-xhttp.open("GET", '/static/data.json', true);
-xhttp.send();
-
-s.bind('clickNode', function (e) {
-    var nodeId = e.data.node.id,
-        toKeep = s.graph.neighbors(nodeId);
-    toKeep[nodeId] = e.data.node;
+    var nodeId = node.id;
+    var toKeep = s.graph.neighbors(nodeId);
+    toKeep[nodeId] = node;
 
     s.graph.nodes().forEach(function (n) {
         if (toKeep[n.id])
@@ -75,16 +51,80 @@ s.bind('clickNode', function (e) {
             e.color = colors.light;
     });
 
+    $(".button-untrack").removeAttr('disabled');
     s.refresh();
+}
+
+s.bind('clickNode', function (e) {
+    var node = e.data.node;
+    findNode(node);
 });
 
-s.bind('clickStage', function (e) {
-    s.graph.nodes().forEach(function (n) {
-        n.color = colors.dark;
+function fetchAndInit() {
+    var deferred = $.Deferred();
+    $.get({
+        url: '/static/data.json'
+    }).then(function (json) {
+        var nodes = {};
+        json.nodes.forEach(function (node) {
+            if (node.size < global.min_size) {
+                return;
+            }
+            var factor = node.size > 10 ? 10 : node.size;
+            factor = 15 - factor;
+            node.size *= factor;
+            node.x *= factor;
+            node.y *= factor;
+            nodes[node.id] = true;
+            node.color = colors.dark;
+            s.graph.addNode(node);
+        });
+        json.edges.forEach(function (edge) {
+            if (!nodes[edge.source] || !nodes[edge.target]) {
+                return;
+            }
+            edge.color = colors.dark;
+            s.graph.addEdge(edge);
+        });
+        s.refresh();
+        deferred.resolve();
+    });
+    return deferred.promise();
+}
+
+$(document).ready(function () {
+    $('.button-untrack').attr('disabled', 'disabled');
+    fetchAndInit().then(function () {
+        $(".button-untrack").click(function () {
+            s.graph.nodes().forEach(function (n) {
+                n.color = colors.dark;
+            });
+            s.graph.edges().forEach(function (e) {
+                e.color = colors.dark;
+            });
+            s.refresh();
+
+            $(this).attr('disabled', 'disabled');
+        });
     });
 
-    s.graph.edges().forEach(function (e) {
-        e.color = colors.dark;
+    $(".button-find").click(function() {
+        var query = $(".gui-box input.search-node").val();
+        if (query.length < 3) {
+            return;
+        }        
+        var nodes = s.graph.nodes();
+        for (var i=0;i<nodes.length;i++) {
+            var node = nodes[i];
+            if (node.id == query) {
+                findNode(node);
+                return;
+            }
+        }
     });
-    s.refresh();
-});
+
+    $(".button-path").click(function() {
+
+    });
+})
+

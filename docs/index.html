@@ -30,7 +30,7 @@
     <meta name="theme-color" content="#333333">
 </head>
 
-<body>    
+<body>
     <div id="particles"></div>
 
     <main role="main">
@@ -58,18 +58,20 @@
                 </div>
             </section>
             <section class="bg-apple aligncenter">
-                <div class="wrap">
+                <div class="wrap size-50">
                     <h2>Instagram Network Structure</h2>
                     <p class="text-intro">How to create and draw graph of users ?</p>
                 </div>
             </section>
             <section class="bg-apple">
                 <div class="wrap size-50">
-                    <p class="text-intro mb-0">You follow someone, someone follows you as well</p>
-                    <div class="wrap" id="simple_graph">
+                    <h2>Instagram Network Structure</h2>
+                    <p class="text-intro">How to create and draw graph of users ?</p>
 
-                    </div>
-                    <p>You can move, zoom and navigate in graph.</p>
+                    <ul>
+                        <li>Every person can follow another person</li>
+                        <li>You follow someone, someone follows you!</li>
+                    </ul>
                 </div>
             </section>
             <section class="bg-apple aligncenter">
@@ -78,9 +80,20 @@
                     <p class="text-intro">An introduction to crawlers.</p>
                 </div>
             </section>
+            <section class="bg-apple aligncenter">
+                <div class="wrap">
+                    <h3>Let's create graph network !</h3>
+                    <p class="text-intro">Using <code>sigma.js</code> !</p>
+                </div>
+            </section>
+            <section class="bg-apple aligncenter">
+                <div class="wrap">
+                    <img src="static/images/wheel.png" style="width:30%; max-width:400px">
+                </div>
+            </section>
             <section class="bg-apple">
                 <div class="wrap">
-                    <h3>A storage for big graph networks</h3>
+                    <h3>A storage for big networks</h3>
                     <p class="text-intro">What is Graph Database ?</p>
                     <ul>
                         <li>Graph database is a database that uses graph structures for semantic queries with nodes,
@@ -106,10 +119,40 @@
                         <li><code>START n=node(*) RETURN n;</code></li>
                         <li><code>MATCH (n) DETACH DELETE n</code></li>
                         <li><code>MATCH (a:Person {name: 'Ahmadreza'}) DETACH DELETE a;</code></li>
-                        <li><code>MATCH (a:Person {name: 'Ahmadreza'}), (b:Person (name: 'Alireza')) CREATE (a)-[:KNOWS]->(b)</code></li>
-                        <li><code>MATCH (a:Person {name: 'Ahmadreza'})-[f:FOLLOW]-(b:Person {name: 'Alireza'}) DELETE f;</code></li>
-                        <li><code>MATCH (a:Person {name: "Ahmadreza"}), (b:Person {name: "Alireza"}) MATCH path = allShortestPaths((a)-[*..4]-(b)) RETURN path</code></li>
+                        <li><code>MATCH (a:Person {name: 'Ahmadreza'}), (b:Person (name: 'Alireza')) CREATE
+                                (a)-[:KNOWS]->(b)</code></li>
+                        <li><code>MATCH (a:Person {name: 'Ahmadreza'})-[f:FOLLOW]-(b:Person {name: 'Alireza'}) DELETE
+                                f;</code></li>
+                    </ul>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap">
+                    <h3>An introduction to NEO4J database</h3>
+                    <p class="text-intro">Simple data-mining queries:</p>
+                    <ul>
+                        <li><code>MATCH (a:Person {name: "Ahmadreza"}), (b:Person {name: "Alireza"}) MATCH path =
+                                allShortestPaths((a)-[*..4]-(b)) RETURN path</code></li>
                         <li><code>MATCH (a:Person {name: 'aidenzibaei'})--(other) RETURN count(other);</code></li>
+                        <li><code>MATCH (a:Person)-[:FOLLOW]->(b:Person) WITH a, b WHERE b.name = 'aidenzibaei' RETURN
+                                a, b</code></li>
+                        <li><code>MATCH (a:Person)-[:FOLLOW]->(b:Person) WITH a, collect(b) as collection, count(b) as c
+                                WHERE c > 1 RETURN a, collection</code></li>
+                    </ul>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap">
+                    <h3>An introduction to NEO4J database</h3>
+                    <p class="text-intro">Simple data-mining queries:</p>
+                    <ul>
+                        <li><code>MATCH (a:Person {name: "Ahmadreza"}), (b:Person {name: "Alireza"}) MATCH path =
+                                allShortestPaths((a)-[*..4]-(b)) RETURN path</code></li>
+                        <li><code>MATCH (a:Person {name: 'aidenzibaei'})--(other) RETURN count(other);</code></li>
+                        <li><code>MATCH (a:Person)-[:FOLLOW]->(b:Person) WITH a, b WHERE b.name = 'aidenzibaei' RETURN
+                                a, b</code></li>
+                        <li><code>MATCH (a:Person)-[:FOLLOW]->(b:Person) WITH a, collect(b) as collection, count(b) as c
+                                WHERE c > 1 RETURN a, collection</code></li>
                     </ul>
                 </div>
             </section>
@@ -203,98 +246,6 @@
             }
         };
         particlesJS('particles', particles);
-
-        var simple_graph = new sigma({
-            renderer: {
-                container: document.getElementById('simple_graph'),
-                type: 'canvas'
-            },
-            settings: {
-                defaultNodeColor: '#eee',
-                defaultLabelColor: '#eee',
-                font: 'Roboto',
-            }
-        });
-        simple_graph.graph.addNode({
-            'id': "aidenzibaei",
-            'label': "aidenzibaei",
-            'x': 0,
-            'y': 0,
-            'size': 5,
-            'color': '#29b6f6'
-        });
-        simple_graph.graph.addNode({
-            'id': "ami_rsh",
-            'label': "ami_rsh",
-            'x': 3,
-            'y': 0,
-            'size': 3,
-        });
-        simple_graph.graph.addNode({
-            'id': "sorooshmoghimi",
-            'label': "sorooshmoghimi",
-            'x': -2,
-            'y': 2,
-            'size': 3,
-        });
-        simple_graph.graph.addNode({
-            'id': "msinamsh",
-            'label': "msinamsh",
-            'x': -2,
-            'y': -2,
-            'size': 3,
-        });
-        simple_graph.graph.addNode({
-            'id': "aryan_rb",
-            'label': "aryan_rb",
-            'x': -5,
-            'y': 0,
-            'size': 1,
-        });
-
-        simple_graph.graph.addEdge({
-            'id': '1',
-            'source': "aidenzibaei",
-            'target': "msinamsh",
-        });
-        simple_graph.graph.addEdge({
-            'id': '2',
-            'source': "msinamsh",
-            'target': "sorooshmoghimi",
-        });
-        simple_graph.graph.addEdge({
-            'id': '3',
-            'source': "aidenzibaei",
-            'target': "sorooshmoghimi",
-        });
-        simple_graph.graph.addEdge({
-            'id': '4',
-            'source': "aidenzibaei",
-            'target': "ami_rsh",
-        });
-        simple_graph.graph.addEdge({
-            'id': '5',
-            'source': "msinamsh",
-            'target': "ami_rsh",
-        });
-        simple_graph.graph.addEdge({
-            'id': '6',
-            'source': "msinamsh",
-            'target': "aryan_rb",
-        });
-        simple_graph.graph.addEdge({
-            'id': '7',
-            'source': "sorooshmoghimi",
-            'target': "aryan_rb",
-        });
-        simple_graph.cameras[0].goTo({
-            x: 0,
-            y: 0,
-            angle: 0,
-            ratio: 2
-        });
-        simple_graph.refresh();
-
         window.ws = new WebSlides();
     </script>
     <script defer src="static/js/svg-icons.js"></script>

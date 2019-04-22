@@ -20,12 +20,12 @@ func New(addr string) (*Neo, error) {
 }
 
 func (n *Neo) AddNode(username string) error {
-	_, err := n.conn.ExecNeo("CREATE (a:Person {username: {username}) RETURN a", map[string]interface{}{"username": username})
+	_, err := n.conn.ExecNeo("MERGE (a:Person {name: {username}}) RETURN a", map[string]interface{}{"username": username})
 	return err
 }
 
 func (n *Neo) AddConnection(a, b string) error {
-	_, err := n.conn.ExecNeo("MATCH (a:Person {username: {a}), (b:Person {username: {b}) CREATE (a)-[:FOLLOW]->(b)",
+	_, err := n.conn.ExecNeo("MATCH (a:Person {name: {a}}), (b:Person {name: {b}}) MERGE (a)-[:FOLLOW]->(b)",
 		map[string]interface{}{"a": a, "b": b},
 	)
 	return err

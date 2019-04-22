@@ -67,11 +67,12 @@ func main() {
 			log.Fatal(err)
 			return
 		}
-		log.Printf("Connected !")
+		log.Println("Connected !")
 
 		instance.Export(configuration.Username + ".json")
 	}
 
+	log.Println("Start fetching followers")
 	currentUsers := instance.Followers()
 	shuffle(currentUsers)
 
@@ -80,13 +81,23 @@ func main() {
 		limit = len(currentUsers)
 	}
 
+	err = g.AddNode(configuration.Username)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	bar := progressbar.NewOptions(limit, progressbar.OptionSetRenderBlankState(true))
 	for i, user := range currentUsers {
 		bar.Add(1)
 
-		g.AddNode(configuration.Username)
-		g.AddNode(user.Username)
-		g.AddConnection(user.Username, configuration.Username)
+		err = g.AddNode(user.Username)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = g.AddConnection(user.Username, configuration.Username)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		if i >= limit {
 			break

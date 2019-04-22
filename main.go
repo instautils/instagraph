@@ -1,145 +1,116 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/kelseyhightower/envconfig"
 	"github.com/schollz/progressbar"
 
 	"github.com/ahmdrz/instagraph/src/graph"
 	"github.com/ahmdrz/instagraph/src/instagram"
 )
 
-func main() {
-	var (
-		username   string
-		password   string
-		delay      = 500
-		limit      = 300
-		usersLimit = 300
-		listenAddr = "0.0.0.0:8080"
-		g          = graph.New()
-		showLast   = false
-		scanMode   = "followers"
-	)
-	username = os.Getenv("INSTA_USERNAME")
-	password = os.Getenv("INSTA_PASSWORD")
-	if len(username)*len(password) == 0 {
-		flag.StringVar(&username, "username", "", "Instagram username")
-		flag.StringVar(&password, "password", "", "Instagram password")
-	}
-	flag.StringVar(&scanMode, "scan-mode", "followers", "Scan mode (followers/followings)")
-	flag.IntVar(&limit, "limit", 300, "How many users should be scan in firsth depth of your followings")
-	flag.IntVar(&usersLimit, "users-limit", 300, "Max users in each followings to scan")
-	flag.IntVar(&delay, "delay", 500, "Sleep between each following (in ms)")
-	flag.BoolVar(&showLast, "latest", false, "Use the latest genereted json file.")
-	flag.Parse()
+var configuration struct {
+	NeoAddr  string        `required:"true" envconfig:"neo_addr"`
+	Password string        `required:"true" envconfig:"password"`
+	Username string        `required:"true" envconfig:"username"`
+	Delay    time.Duration `default:"1s" envconfig:"delay"`
+	Limit    int           `default:"300" envconfig:"limit"`
+}
 
-	if len(username)*len(password) == 0 {
+func main() {
+	err := envconfig.Process("INSTAGRAPH", &configuration)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Connecting to neo4j on", configuration.NeoAddr)
+	var g *graph.Neo
+	for {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Println(err)
+			}
+		}()
+		var err error
+		g, err = graph.New(configuration.NeoAddr)
+		if err == nil {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	if len(configuration.Username)*len(configuration.Password) == 0 {
 		log.Fatal("username or password is empty")
 		return
 	}
 
-	if scanMode != "followers" && scanMode != "followings" {
-		log.Fatal("bad scan-mode. should be `followers` or `followings`")
-		return
-	}
-
-	if !showLast {
-		log.Printf("Scan mode is '%s'", scanMode)
-		var instance *instagram.Instagram
-		if fileExists(username + ".json") {
-			var err error
-			log.Printf("Loading instagram as %s ...", username)
-			instance, err = instagram.Import(username + ".json")
-			if err != nil {
-				log.Fatal(err)
-				return
-			}
-		} else {
-			var err error
-			log.Printf("Connecting to instagram as %s ...", username)
-			instance, err = instagram.New(username, password)
-			if err != nil {
-				log.Fatal(err)
-				return
-			}
-			log.Printf("Connected !")
-
-			instance.Export(username + ".json")
-		}
-
-		log.Printf("Fetching current %s ...", scanMode)
-		currentUsers := []instagram.User{}
-		if scanMode == "followers" {
-			currentUsers = instance.Followers()
-		} else {
-			currentUsers = instance.Followings()
-		}
-		shuffle(currentUsers)
-
-		if limit == -1 {
-			limit = len(currentUsers)
-		}
-
-		log.Printf("Scanning %s ...", scanMode)
-		bar := progressbar.NewOptions(limit, progressbar.OptionSetRenderBlankState(true))
-		for i, user := range currentUsers {
-			bar.Add(1)
-
-			g.AddConnection(username, user.Username)
-
-			if i >= limit {
-				break
-			}
-
-			users := []instagram.User{}
-			if scanMode == "followers" {
-				users = user.Followers(instance)
-			} else {
-				users = user.Followings(instance)
-			}
-			if len(users) > usersLimit {
-				users = users[:usersLimit]
-			}
-			shuffle(users)
-
-			for _, target := range users {
-				if target.Username == username {
-					continue
-				}
-				g.AddConnection(user.Username, target.Username)
-			}
-
-			time.Sleep(time.Duration(delay) * time.Millisecond)
-		}
-
-		ioutil.WriteFile("static/data.json", g.Marshall(), 0755)
-
-		// newline after progressbar
-		fmt.Println()
-	}
-
-	handler := http.NewServeMux()
-	handler.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		bytes, err := ioutil.ReadFile("static/index.html")
+	var instance *instagram.Instagram
+	if fileExists(configuration.Username + ".json") {
+		var err error
+		log.Printf("Loading instagram as %s ...", configuration.Username)
+		instance, err = instagram.Import(configuration.Username + ".json")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Fatal(err)
 			return
 		}
-		w.Write(bytes)
-	})
-	handler.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	} else {
+		var err error
+		log.Printf("Connecting to instagram as %s ...", configuration.Username)
+		instance, err = instagram.New(configuration.Username, configuration.Password)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		log.Printf("Connected !")
 
-	log.Printf("Listening to %s ...", listenAddr)
-	log.Fatal(http.ListenAndServe(listenAddr, handler))
+		instance.Export(configuration.Username + ".json")
+	}
+
+	currentUsers := instance.Followers()
+	shuffle(currentUsers)
+
+	limit := configuration.Limit
+	if limit == -1 {
+		limit = len(currentUsers)
+	}
+
+	bar := progressbar.NewOptions(limit, progressbar.OptionSetRenderBlankState(true))
+	for i, user := range currentUsers {
+		bar.Add(1)
+
+		g.AddNode(configuration.Username)
+		g.AddNode(user.Username)
+		g.AddConnection(user.Username, configuration.Username)
+
+		if i >= limit {
+			break
+		}
+
+		users := user.Followers(instance)
+		if len(users) > limit {
+			users = users[:limit]
+		}
+		shuffle(users)
+
+		for _, target := range users {
+			if target.Username == configuration.Username {
+				continue
+			}
+			g.AddNode(target.Username)
+			g.AddConnection(target.Username, user.Username)
+		}
+
+		time.Sleep(configuration.Delay)
+	}
+
+	// newline after progressbar
+	fmt.Println()
 }
 
 func shuffle(vals []instagram.User) {

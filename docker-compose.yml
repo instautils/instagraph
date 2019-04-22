@@ -1,0 +1,16 @@
+version: '2'
+services:
+  neo4j:
+    image: neo4j:3.0
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    
+  instagraph:
+    image: instagraph:latest
+    links:
+      - neo4j  
+    environment:
+      - INSTAGRAPH_NEO_ADDR=bolt://neo4j:hello@neo4j:7687
+      - INSTAGRAPH_USERNAME=aidenzibaei
+      - INSTAGRAPH_PASSWORD=""

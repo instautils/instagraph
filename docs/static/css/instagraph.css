@@ -64,3 +64,11 @@ img.whitelogo {
 .mt-0 {
     margin-top: 0;
 }
+
+p {
+    font-size: 20px;
+}
+
+p.text-intro {
+    font-size: 24px;
+}

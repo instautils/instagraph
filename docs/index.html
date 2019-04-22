@@ -30,36 +30,13 @@
     <meta name="theme-color" content="#333333">
 </head>
 
-<body>
-    <header role="banner">
-        <nav role="navigation">
-            <ul>
-                <li class="github">
-                    <a rel="external" href="https://github.com/ahmdrz" title="Github">
-                        <svg class="fa-github">
-                            <use xlink:href="#fa-github"></use>
-                        </svg>
-                        <em>@ahmdrz</em>
-                    </a>
-                </li>
-                <li class="twitter">
-                    <a rel="external" href="https://twitter.com/aidenzibaei" title="Twitter">
-                        <svg class="fa-twitter">
-                            <use xlink:href="#fa-twitter"></use>
-                        </svg>
-                        <em>@aidenzibaei</em>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-
+<body>    
     <div id="particles"></div>
 
     <main role="main">
         <article id="webslides">
             <section class="bg-apple aligncenter">
-                <div class="wrap">
+                <div class="wrap size-50">
                     <h1><img class="whitelogo" src="static/images/icons/network.svg"></h1>
                     <h1>InstaGraph</h1>
                     <p class="text-intro">Social graph network of your Instagram account.</p>
@@ -82,12 +59,12 @@
             </section>
             <section class="bg-apple aligncenter">
                 <div class="wrap">
-                    <h2>Instagram Network Structure</h2>                    
+                    <h2>Instagram Network Structure</h2>
                     <p class="text-intro">How to create and draw graph of users ?</p>
                 </div>
             </section>
             <section class="bg-apple">
-                <div class="wrap size-50">                    
+                <div class="wrap size-50">
                     <p class="text-intro mb-0">You follow someone, someone follows you as well</p>
                     <div class="wrap" id="simple_graph">
 
@@ -99,6 +76,41 @@
                 <div class="wrap">
                     <h3>How to get this kind of data from Instagram ?</h3>
                     <p class="text-intro">An introduction to crawlers.</p>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap">
+                    <h3>A storage for big graph networks</h3>
+                    <p class="text-intro">What is Graph Database ?</p>
+                    <ul>
+                        <li>Graph database is a database that uses graph structures for semantic queries with nodes,
+                            edges and properties to represent and store data.</li>
+                        <li>Graph databases are part of the NoSQL databases created to address the limitations of the
+                            existing relational databases.</li>
+                        <li>A key concept of the system is the graph (or edge or relationship), which directly relates
+                            data items in the store a collection of nodes of data and edges representing the
+                            relationships between the nodes.</li>
+                        <li>Graph databases hold the relationships between data as a priority.</li>
+                        <li>Querying relationships within a graph database is fast because they are perpetually stored
+                            within the database itself.</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="bg-apple">
+                <div class="wrap">
+                    <h3>An introduction to NEO4J database</h3>
+                    <p class="text-intro">List of queries</p>
+                    <ul>
+                        <li><code>CREATE (a:Person {name: 'Ahmadreza'}) RETURN a</code></li>
+                        <li><code>MERGE (a:Person {name: 'Alireza'}) RETURN a</code></li>
+                        <li><code>START n=node(*) RETURN n;</code></li>
+                        <li><code>MATCH (n) DETACH DELETE n</code></li>
+                        <li><code>MATCH (a:Person {name: 'Ahmadreza'}) DETACH DELETE a;</code></li>
+                        <li><code>MATCH (a:Person {name: 'Ahmadreza'}), (b:Person (name: 'Alireza')) CREATE (a)-[:KNOWS]->(b)</code></li>
+                        <li><code>MATCH (a:Person {name: 'Ahmadreza'})-[f:FOLLOW]-(b:Person {name: 'Alireza'}) DELETE f;</code></li>
+                        <li><code>MATCH (a:Person {name: "Ahmadreza"}), (b:Person {name: "Alireza"}) MATCH path = allShortestPaths((a)-[*..4]-(b)) RETURN path</code></li>
+                        <li><code>MATCH (a:Person {name: 'aidenzibaei'})--(other) RETURN count(other);</code></li>
+                    </ul>
                 </div>
             </section>
         </article>
@@ -275,7 +287,12 @@
             'source': "sorooshmoghimi",
             'target': "aryan_rb",
         });
-        simple_graph.cameras[0].goTo({ x: 0, y: 0, angle: 0, ratio: 2 });
+        simple_graph.cameras[0].goTo({
+            x: 0,
+            y: 0,
+            angle: 0,
+            ratio: 2
+        });
         simple_graph.refresh();
 
         window.ws = new WebSlides();

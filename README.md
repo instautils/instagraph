@@ -3,7 +3,20 @@
 
 <p align="center"><img width=100% src="https://github.com/ahmdrz/instagraph/raw/master/resources/screenshot.png"></p>
 
+<p align="center"><img width=100% src="https://github.com/ahmdrz/instagraph/raw/master/resources/neo4j.png"></p>
+
+
+Another branch named as 'sigma' is ready to use. Master branch is using `neo4j` as graph database.
+
 ### Installation (recommended)
+
+You have to run neo4j on your system. You can use docker to use neo4j with following code:
+
+```
+$ docker run -p 7474:7474 -p 7687:7687 neo4j:3.0
+$ # connection string of neo4j will be something like this:
+$ # bolt://neo4j:neo4j@neo4j:7687
+```
 
 ```
 $ # If you have Golang on your computer.
@@ -16,16 +29,8 @@ $ go get -u github.com/ahmdrz/instagraph
 $ git clone https://github.com/ahmdrz/instagraph
 $ cd instagraph
 $ go build -i -o instagraph
-$ ./instagraph -username="" -password=""
+$ INSTAGRAPH_USERNAME="" INSTAGRAPH_PASSWORD="" INSTAGRAPH_NEO_ADDR="" ./instagraph
 ```
-
-##### Parameters
-
-1. **username**: Username of your Instagram account.
-2. **password**: Password of your Instagram account.
-3. **limit**: Limit of users in first depth scan of your followings.
-4. **delay**: Sleep time between each user scan.
-5. **users-limit**: Maximum number of users in each followings scan request.
 
 ##### Warning
 
@@ -35,12 +40,8 @@ Please make sure that the `<username>.json` is in the safe place. It's your logi
 
 ```
 $ docker pull ahmdrz/instagraph:latest
-$ docker run -e INSTA_USERNAME="" -e INSTA_PASSWORD="" -p 8080:8080 ahmdrz/instagraph:latest
+$ docker run -e INSTAGRAPH_USERNAME="" -e INSTAGRAPH_PASSWORD="" -e INSTAGRAPH_NEO_ADDR="" ahmdrz/instagraph:latest
 ```
-
-##### Note
-
-Please wait for scanning proccess to be finished and you see `Listening to 0.0.0.0:8080` message then open browser.
 
 ---
 
@@ -48,4 +49,4 @@ Please wait for scanning proccess to be finished and you see `Listening to 0.0.0
 
 ---
 
-Powered with :heart: by `sigma.js` and `ahmdrz/goinsta`.
+Powered with :heart: by `neo4j` and `ahmdrz/goinsta`.
